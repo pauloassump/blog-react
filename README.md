@@ -1,2 +1,2 @@
 # blog-react
-Blog react desenvolvido na primeiro módulo do IgniteLab - Rocketseat
+Blog react desenvolvido no primeiro módulo do IgniteLab - Rocketseat
