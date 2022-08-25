@@ -10,24 +10,48 @@ import { useState } from 'react'
 
 export function Post({author, publishedAt, content}) {
 
+    
     const [ comments, setComments ] = useState([
-        1
+        'Post muito bacana, hein?!'
     ]);
 
+    const [newComment, setNewComment] = useState('')
+    
     const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
         locale: ptBR
     })
-
+    
     const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
         locale: ptBR,
         addSuffix: true
     })
-
+    
     function handleNewComment() {
         event.preventDefault()
 
-        setComments([...comments, comments.length + 1])
+        setComments([...comments, newComment])
+
+        setNewComment('')
     }
+
+    function handleNewCommentChange() {
+        event.target.setCustomValidity('')
+
+        setNewComment(event.target.value)
+    }
+
+    function handleInvalidNewComment() {
+        event.target.setCustomValidity('Esse campo não pode ficar em branco!')
+    }
+
+    function deleteComment(commentToDelete) {
+
+        const commentWithoutDeleteOne = comments.filter(comment => comment !== commentToDelete)
+
+        setComments(commentWithoutDeleteOne)
+    }
+
+    const isNewCommentIsEmpty = newComment.length === 0
 
     return (
         <article className={styles.post}>
@@ -62,18 +86,26 @@ export function Post({author, publishedAt, content}) {
 
                 <textarea
                     placeholder="Deixe um comentário"
+                    value={newComment}
+                    onChange={handleNewCommentChange}
+                    onInvalid={handleInvalidNewComment}
+                    required
                 />
 
                 <footer>
-                    <button type="submit">Publicar</button>
+                    <button type="submit" disabled={isNewCommentIsEmpty}>
+                        Publicar
+                    </button>
                 </footer>
             </form>
 
             <div className={styles.comentList}>
-                {comments.map((comment, i) => {
+                {comments.map(comment => {
                     return (
                       <Comment
-                        key={i}
+                        key={comment}
+                        content={comment}
+                        deleteComment={deleteComment}
                        />  
                     )
                 })}
